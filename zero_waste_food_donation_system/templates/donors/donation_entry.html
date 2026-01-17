@@ -1,0 +1,624 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Donation{% endblock %}
+
+{% block content %}
+<div class="donation-container">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            <!-- Progress Steps -->
+            <div class="progress-steps mb-5 animate__animated animate__fadeInDown">
+                <div class="steps-container">
+                    <div class="step active">
+                        <div class="step-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <span class="step-label">Food Details</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <span class="step-label">Quantity</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span class="step-label">Expiry</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <span class="step-label">Confirm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card donation-card shadow-lg border-0 rounded-4 animate__animated animate__fadeInUp">
+                <div class="row g-0">
+                    <!-- Left Visual Section -->
+                    <div class="col-lg-5 donation-visual">
+                        <div class="donation-visual-content h-100 d-flex flex-column justify-content-center align-items-center text-center text-white p-5">
+                            <div class="visual-icon mb-4">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">Share Food, Save Lives</h3>
+                            <p class="mb-4">Your donation helps reduce food waste and provides meals for those in need. Every contribution makes a difference.</p>
+                            
+                            <div class="impact-stats w-100">
+                                <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                                    <span class="stat-label">Food Saved</span>
+                                    <span class="stat-value">12,500+ kg</span>
+                                </div>
+                                <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                                    <span class="stat-label">Meals Provided</span>
+                                    <span class="stat-value">25,000+</span>
+                                </div>
+                                <div class="stat-item d-flex justify-content-between align-items-center">
+                                    <span class="stat-label">CO₂ Reduced</span>
+                                    <span class="stat-value">8,750+ kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Form Section -->
+                    <div class="col-lg-7">
+                        <div class="p-4 p-md-5">
+                            <div class="form-header mb-4">
+                                <h2 class="fw-bold text-primary mb-2">Add Food Donation</h2>
+                                <p class="text-muted">Fill in the details of the food you want to donate. Together, we can reduce food waste!</p>
+                            </div>
+
+                            <form method="post" novalidate class="needs-validation" id="donationForm">
+                                {% csrf_token %}
+                                
+                                <!-- Food Type -->
+                                <div class="form-section mb-4">
+                                    <label class="form-label fw-semibold mb-3">
+                                        <i class="fas fa-utensils me-2 text-primary"></i>Food Type
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-tag"></i>
+                                        </span>
+                                        {{ form.food_type }}
+                                    </div>
+                                    {% if form.food_type.help_text %}
+                                        <div class="form-text">{{ form.food_type.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.food_type.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.food_type.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Quantity and Unit -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-semibold mb-3">
+                                            <i class="fas fa-weight me-2 text-primary"></i>Quantity
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </span>
+                                            {{ form.quantity }}
+                                        </div>
+                                        {% if form.quantity.help_text %}
+                                            <div class="form-text">{{ form.quantity.help_text }}</div>
+                                        {% endif %}
+                                        {% if form.quantity.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.quantity.errors|striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-semibold mb-3">
+                                            <i class="fas fa-ruler me-2 text-primary"></i>Unit
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="fas fa-cube"></i>
+                                            </span>
+                                            {{ form.unit }}
+                                        </div>
+                                        {% if form.unit.help_text %}
+                                            <div class="form-text">{{ form.unit.help_text }}</div>
+                                        {% endif %}
+                                        {% if form.unit.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.unit.errors|striptags }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Expiry Time -->
+                                <div class="form-section mb-4">
+                                    <label class="form-label fw-semibold mb-3">
+                                        <i class="fas fa-clock me-2 text-primary"></i>Expiry Time
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        {{ form.expiry_time }}
+                                    </div>
+                                    {% if form.expiry_time.help_text %}
+                                        <div class="form-text">{{ form.expiry_time.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.expiry_time.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.expiry_time.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Additional Notes -->
+                                {% if form.description %}
+                                <div class="form-section mb-4">
+                                    <label class="form-label fw-semibold mb-3">
+                                        <i class="fas fa-sticky-note me-2 text-primary"></i>Additional Notes
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light align-items-start pt-3">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        {{ form.description }}
+                                    </div>
+                                    {% if form.description.help_text %}
+                                        <div class="form-text">{{ form.description.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.description.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Storage Instructions -->
+                                {% if form.storage_instructions %}
+                                <div class="form-section mb-4">
+                                    <label class="form-label fw-semibold mb-3">
+                                        <i class="fas fa-temperature-low me-2 text-primary"></i>Storage Instructions
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light align-items-start pt-3">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+                                        {{ form.storage_instructions }}
+                                    </div>
+                                    {% if form.storage_instructions.help_text %}
+                                        <div class="form-text">{{ form.storage_instructions.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.storage_instructions.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.storage_instructions.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Form Actions -->
+                                <div class="form-actions mt-5 pt-4 border-top">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <a href="{% url 'donors:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">
+                                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6 text-md-end">
+                                            <button type="submit" class="btn btn-primary btn-lg px-5 py-2 donation-submit-btn">
+                                                <i class="fas fa-paper-plane me-2"></i>Submit Donation
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card tips-card border-0 bg-light animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-lightbulb me-2 text-warning"></i>Donation Tips
+                                    </h6>
+                                    <p class="mb-0 text-muted small">
+                                        Ensure food is properly packaged and within safe consumption period. Fresh produce should be clean and undamaged.
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tipsModal">
+                                        View All Tips
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips Modal -->
+<div class="modal fade" id="tipsModal" tabindex="-1" aria-labelledby="tipsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="tipsModalLabel">
+                    <i class="fas fa-lightbulb me-2"></i>Food Donation Guidelines
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tip-item mb-3">
+                    <h6 class="fw-semibold text-primary">
+                        <i class="fas fa-check-circle me-2"></i>Freshness Matters
+                    </h6>
+                    <p class="mb-0 small text-muted">Donate food that is fresh and within its consumption period.</p>
+                </div>
+                <div class="tip-item mb-3">
+                    <h6 class="fw-semibold text-primary">
+                        <i class="fas fa-check-circle me-2"></i>Proper Packaging
+                    </h6>
+                    <p class="mb-0 small text-muted">Use clean, secure containers to prevent contamination.</p>
+                </div>
+                <div class="tip-item mb-3">
+                    <h6 class="fw-semibold text-primary">
+                        <i class="fas fa-check-circle me-2"></i>Storage Conditions
+                    </h6>
+                    <p class="mb-0 small text-muted">Note any special storage requirements for your donation.</p>
+                </div>
+                <div class="tip-item">
+                    <h6 class="fw-semibold text-primary">
+                        <i class="fas fa-check-circle me-2"></i>Accurate Information
+                    </h6>
+                    <p class="mb-0 small text-muted">Provide clear details about the food type and quantity.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.donation-container {
+    padding: 40px 0;
+}
+
+/* Progress Steps */
+.progress-steps {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.steps-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.steps-container::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: #e9ecef;
+    z-index: 1;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.step.active .step-icon {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.step-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Donation Card */
+.donation-card {
+    overflow: hidden;
+}
+
+.donation-visual {
+    background: linear-gradient(135deg, #2ecc71, #3498db);
+    position: relative;
+    overflow: hidden;
+}
+
+.donation-visual::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="0,0 1000,100 0,100"/></svg>');
+    background-size: cover;
+}
+
+.donation-visual-content {
+    position: relative;
+    z-index: 1;
+}
+
+.visual-icon {
+    font-size: 4rem;
+    opacity: 0.9;
+}
+
+.impact-stats {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.stat-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.stat-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Form Styling */
+.form-header {
+    border-bottom: 2px solid #f8f9fa;
+    padding-bottom: 1rem;
+}
+
+.form-section {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control, .form-select, textarea.form-control {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus, textarea.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+}
+
+.input-group-text {
+    border-radius: 10px 0 0 10px;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    min-width: 50px;
+    justify-content: center;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.donation-submit-btn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.donation-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.donation-submit-btn:hover::before {
+    left: 100%;
+}
+
+/* Tips Card */
+.tips-card {
+    border-left: 4px solid var(--warning-color);
+}
+
+.tip-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tip-item:last-child {
+    border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .donation-visual {
+        display: none !important;
+    }
+    
+    .steps-container::before {
+        left: 5%;
+        right: 5%;
+    }
+    
+    .step-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .step-label {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .donation-container {
+        padding: 20px 0;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // Add loading state to submit button
+    const donationForm = document.getElementById('donationForm');
+    const submitBtn = document.querySelector('.donation-submit-btn');
+    
+    if (donationForm && submitBtn) {
+        donationForm.addEventListener('submit', function() {
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            submitBtn.disabled = true;
+            
+            // Revert after 5 seconds if still on page (form submission failed)
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 5000);
+        });
+    }
+
+    // Add character counters for textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        const maxLength = textarea.getAttribute('maxlength');
+        if (maxLength) {
+            const counter = document.createElement('div');
+            counter.className = 'form-text text-end';
+            counter.innerHTML = `<span class="char-count">0</span>/${maxLength} characters`;
+            textarea.parentNode.appendChild(counter);
+            
+            textarea.addEventListener('input', function() {
+                const count = this.value.length;
+                counter.querySelector('.char-count').textContent = count;
+                
+                if (count > maxLength * 0.8) {
+                    counter.classList.add('text-warning');
+                } else {
+                    counter.classList.remove('text-warning');
+                }
+            });
+        }
+    });
+
+    // Add real-time validation
+    const inputs = document.querySelectorAll('.form-control, .form-select');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() !== '') {
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

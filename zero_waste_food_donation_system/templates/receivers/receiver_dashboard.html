@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receiver Dashboard</title>
+<script>
+    function showNotification(message) {
+        alert(message); // Simple alert for now; replace with a custom popup or WebSocket
+    }
+    // Polling to check for notifications (simplified)
+    setInterval(() => {
+        fetch(`/check_notification/{{ receiver_id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) showNotification(data.message);
+            });
+    }, 5000); // Check every 5 seconds
+</script>
+
+</head>
+<body>
+    <h1>Receiver Dashboard</h1>
+    <h2>Available Donations</h2>
+    <ul>
+    {% for donation in available_donations %}
+        <li>
+            {{ donation.food_type }} - {{ donation.quantity }} {{ donation.unit }} - Expires: {{ donation.expiry_time }} (Donor: {{ donation.donor_id.name }})
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="donation_id" value="{{ donation.donation_id }}">
+                <button type="submit" name="schedule_pickup" value="schedule">Schedule Pickup</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+    <h2>Scheduled Pickups</h2>
+    <ul>
+    {% for pickup in scheduled_pickups %}
+        <li>
+            {{ pickup.donation_id.food_type }} - Status: {{ pickup.pickup_status }} - Scheduled: {{ pickup.scheduled_time }}
+            {% if pickup.pickup_status == 'pending' %}
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="pickup_id" value="{{ pickup.schedule_id }}">
+                    <button type="submit" name="action" value="confirm">Confirm</button>
+                </form>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    <p><a href="{% url 'receivers:receiver_logout' %}">Logout</a></p>
+</body>
+</html>

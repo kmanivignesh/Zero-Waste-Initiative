@@ -1,0 +1,278 @@
+{% extends 'administration/base.html' %}
+{% load static %}
+
+{% block title %}Analytics - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1"><i class="fas fa-chart-line me-2"></i>System Analytics</h2>
+            <p class="text-muted mb-0">Comprehensive analytics and insights</p>
+        </div>
+    </div>
+
+    <!-- Main Charts Row -->
+    <div class="row mb-4">
+        <!-- Food Type Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-utensils me-2"></i>Food Type Distribution</h5>
+                </div>
+                <div class="card-body">
+                    {% if food_type_analytics %}
+                        <canvas id="foodTypeChart" height="250"></canvas>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No food type data available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation Status -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-pie me-2"></i>Donation Status</h5>
+                </div>
+                <div class="card-body">
+                    {% if status_distribution %}
+                        <canvas id="statusChart" height="250"></canvas>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No status data available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Charts -->
+    <div class="row mb-4">
+        <!-- Monthly Performance -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-bar me-2"></i>Monthly Performance</h5>
+                </div>
+                <div class="card-body">
+                    {% if monthly_performance %}
+                        <canvas id="monthlyPerformanceChart" height="250"></canvas>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No monthly performance data available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pickup Analytics -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-truck-loading me-2"></i>Pickup Analytics</h5>
+                </div>
+                <div class="card-body">
+                    {% if pickup_analytics %}
+                        <canvas id="pickupChart" height="250"></canvas>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-truck-loading fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No pickup data available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="row">
+        <!-- Food Type Table -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Food Type Statistics</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Food Type</th>
+                                    <th>Count</th>
+                                    <th>Total Quantity</th>
+                                    <th>Average</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in food_type_analytics %}
+                                <tr>
+                                    <td class="fw-semibold">{{ item.food_type }}</td>
+                                    <td><span class="badge bg-primary">{{ item.count }}</span></td>
+                                    <td><span class="badge bg-success">{{ item.total_quantity|default:0 }}kg</span></td>
+                                    <td><span class="badge bg-info">{{ item.avg_quantity|default:0|floatformat:1 }}kg</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">No food type data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Performance Table -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-calendar me-2"></i>Monthly Performance</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Donations</th>
+                                    <th>Pickups</th>
+                                    <th>Success Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in monthly_performance %}
+                                <tr>
+                                    <td class="fw-semibold">{{ item.month }}</td>
+                                    <td><span class="badge bg-primary">{{ item.donations }}</span></td>
+                                    <td><span class="badge bg-info">{{ item.pickups }}</span></td>
+                                    <td>
+                                        <span class="badge bg-{% if item.success_rate > 80 %}success{% elif item.success_rate > 60 %}warning{% else %}danger{% endif %}">
+                                            {{ item.success_rate }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">No monthly data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ food_type_analytics|json_script:"foodTypeData" }}
+{{ status_distribution|json_script:"statusData" }}
+{{ monthly_performance|json_script:"monthlyPerformanceData" }}
+{{ pickup_analytics|json_script:"pickupData" }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+console.log("FoodTypeData:", JSON.parse(document.getElementById('foodTypeData').textContent));
+console.log("StatusData:", JSON.parse(document.getElementById('statusData').textContent));
+console.log("MonthlyPerformanceData:", JSON.parse(document.getElementById('monthlyPerformanceData').textContent));
+console.log("PickupData:", JSON.parse(document.getElementById('pickupData').textContent));
+
+    // Safely parse JSON data
+    const foodTypeData = JSON.parse(document.getElementById('foodTypeData').textContent);
+    const statusData = JSON.parse(document.getElementById('statusData').textContent);
+    const monthlyPerformanceData = JSON.parse(document.getElementById('monthlyPerformanceData').textContent);
+    const pickupData = JSON.parse(document.getElementById('pickupData').textContent);
+
+    // Food Type Chart
+    if (foodTypeData.length > 0) {
+        const ctxFood = document.getElementById('foodTypeChart').getContext('2d');
+        new Chart(ctxFood, {
+            type: 'doughnut',
+            data: {
+                labels: foodTypeData.map(item => item.food_type),
+                datasets: [{
+                    data: foodTypeData.map(item => item.count),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                    ]
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    // Status Distribution Chart
+    if (statusData.length > 0) {
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'pie',
+            data: {
+                labels: statusData.map(item => item.status),
+                datasets: [{
+                    data: statusData.map(item => item.count),
+                    backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#6c757d']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    // Monthly Performance Chart
+    if (monthlyPerformanceData.length > 0) {
+        const ctxMonthly = document.getElementById('monthlyPerformanceChart').getContext('2d');
+        new Chart(ctxMonthly, {
+            type: 'bar',
+            data: {
+                labels: monthlyPerformanceData.map(item => item.month),
+                datasets: [
+                    {
+                        label: 'Donations',
+                        data: monthlyPerformanceData.map(item => item.donations || 0),
+                        backgroundColor: '#FF6384',
+                        borderColor: '#FF6384',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pickups',
+                        data: monthlyPerformanceData.map(item => item.pickups || 0),
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#36A2EB',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    // Pickup Analytics Chart
+    if (pickupData.length > 0) {
+        const ctxPickup = document.getElementById('pickupChart').getContext('2d');
+        new Chart(ctxPickup, {
+            type: 'polarArea',
+            data: {
+                labels: pickupData.map(item => item.pickup_status),
+                datasets: [{
+                    data: pickupData.map(item => item.count || 0),
+                    backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#6c757d']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+<h1>Pickup Management</h1>
+<ul>
+{% for pickup in pickups %}
+    <li>{{ pickup.donation_id.food_type }} - Receiver: {{ pickup.receiver_id.name }} - Status: {{ pickup.pickup_status }}</li>
+{% endfor %}
+</ul>

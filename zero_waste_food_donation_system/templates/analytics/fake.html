@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header animate__animated animate__fadeIn">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold text-primary mb-2">
+                    <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+                </h1>
+                <p class="text-muted mb-0">
+                    Welcome, <strong class="text-primary">
+                    {% if user_type == 'donor' and donor_name %}
+                        {{ donor_name }}
+                    {% elif user_type == 'receiver' and receiver_name %}
+                        {{ receiver_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    </strong>! Manage your food donations and pickup requests
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="user-badge bg-primary text-white p-3 rounded-3 d-inline-block">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <span class="fw-semibold">{{ user_type|title }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user_type == 'donor' %}
+        <!-- Stats Cards for Donor -->
+        <div class="row mt-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-primary text-white animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ donations|length }}</h2>
+                                <p class="mb-0">Total Donations</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-hand-holding-heart fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ... rest of donor content remains the same ... -->

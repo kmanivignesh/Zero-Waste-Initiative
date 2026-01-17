@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-80">
+            <div class="col-lg-6">
+                <div class="hero-content animate__animated animate__fadeInLeft">
+                    <h1 class="display-3 fw-bold text-primary mb-4">Zero Waste Initiative</h1>
+                    <p class="lead fs-4 mb-4">Transforming Food Surplus into Hope - A Data-Driven Platform to Eliminate Food Waste</p>
+                    <p class="text-muted mb-5">Join our mission to redirect millions of meals from landfills to those in need through intelligent donation matching.</p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'main:auth' %}" target="_blank" class="btn btn-primary btn-lg me-3 px-4 py-3 pulse-animation">
+                            <i class="fas fa-rocket me-2"></i>Get Started
+                        </a>
+                        <a href="#features" class="btn btn-outline-primary btn-lg px-4 py-3">
+                            <i class="fas fa-play-circle me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image animate__animated animate__fadeInRight">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-apple-alt text-success"></i>
+                        <span>Fresh Produce</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-bread-slice text-warning"></i>
+                        <span>Bakery Items</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-utensils text-danger"></i>
+                        <span>Prepared Meals</span>
+                    </div>
+                    <div class="main-hero-illustration">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3050/3050159.png" alt="Food Donation" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item animate__animated animate__fadeInUp" data-count="12500">
+                    <h3 class="display-4 fw-bold text-primary">12,500+</h3>
+                    <p class="text-muted">Meals Donated</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item animate__animated animate__fadeInUp" data-count="350" style="animation-delay: 0.1s">
+                    <h3 class="display-4 fw-bold text-success">350+</h3>
+                    <p class="text-muted">Active Donors</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item animate__animated animate__fadeInUp" data-count="89" style="animation-delay: 0.2s">
+                    <h3 class="display-4 fw-bold text-warning">89%</h3>
+                    <p class="text-muted">Reduction in Waste</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item animate__animated animate__fadeInUp" data-count="42" style="animation-delay: 0.3s">
+                    <h3 class="display-4 fw-bold text-info">42</h3>
+                    <p class="text-muted">Cities Served</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">How It Works</h2>
+            <p class="lead text-muted animate__animated animate__fadeInDown" style="animation-delay: 0.1s">Three simple roles, one powerful impact</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card card h-100 shadow-lg border-0 animate__animated animate__fadeInUp">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-4">
+                            <div class="icon-wrapper bg-primary text-white">
+                                <i class="fas fa-hand-holding-heart fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Donors</h3>
+                        <p class="text-muted mb-4">Easily donate excess food items and track your environmental impact with real-time analytics.</p>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Simple donation process</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Impact tracking dashboard</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Tax deduction reports</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card card h-100 shadow-lg border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-4">
+                            <div class="icon-wrapper bg-success text-white">
+                                <i class="fas fa-hands-helping fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Receivers</h3>
+                        <p class="text-muted mb-4">Find and claim available donations in your area with real-time notifications and easy pickup.</p>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Real-time availability</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Location-based matching</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Instant notifications</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card card h-100 shadow-lg border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-4">
+                            <div class="icon-wrapper bg-info text-white">
+                                <i class="fas fa-chart-line fa-2x"></i>
+                            </div>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Admins</h3>
+                        <p class="text-muted mb-4">Monitor platform performance, analyze impact metrics, and ensure smooth operations.</p>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Comprehensive analytics</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>User management</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Impact reporting</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-3">Ready to Make a Difference?</h2>
+                <p class="lead mb-0">Join thousands of others in the fight against food waste and hunger.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'main:auth' %}" target="_blank" class="btn btn-light btn-lg px-5 py-3">
+                    Start Today <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
+
+.hero-image {
+    position: relative;
+    height: 400px;
+}
+
+.main-hero-illustration {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-card {
+    position: absolute;
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-card i {
+    font-size: 1.5rem;
+}
+
+.card-1 {
+    top: 20px;
+    left: 20px;
+    animation-delay: 0s;
+}
+
+.card-2 {
+    top: 20px;
+    right: 20px;
+    animation-delay: 1s;
+}
+
+.card-3 {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.stats-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-item h3 {
+    font-size: 3.5rem;
+}
+
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 20px;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.feature-icon .icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
+    background-size: cover;
+}
+
+.btn {
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+        text-align: center;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-image {
+        height: 300px;
+        margin-top: 40px;
+    }
+    
+    .main-hero-illustration {
+        width: 200px;
+    }
+    
+    .floating-card {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Animate stats counting
+document.addEventListener('DOMContentLoaded', function() {
+    const statItems = document.querySelectorAll('.stat-item');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const count = target.getAttribute('data-count');
+                const element = target.querySelector('h3');
+                animateCount(element, count);
+                observer.unobserve(target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    statItems.forEach(item => {
+        observer.observe(item);
+    });
+    
+    function animateCount(element, target) {
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                element.textContent = target + (target === '89' ? '%' : (target === '42' ? '' : '+'));
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(current) + (target === '89' ? '%' : (target === '42' ? '' : '+'));
+            }
+        }, 20);
+    }
+});
+
+// Add scroll animations
+document.addEventListener('DOMContentLoaded', function() {
+    const animatedElements = document.querySelectorAll('.animate__animated');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.visibility = 'visible';
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+    
+    animatedElements.forEach(element => {
+        element.style.visibility = 'hidden';
+        observer.observe(element);
+    });
+});
+</script>
+{% endblock %}

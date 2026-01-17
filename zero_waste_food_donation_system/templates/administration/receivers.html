@@ -1,0 +1,208 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Manage Receivers - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1"><i class="fas fa-users me-2"></i>Manage Receivers</h2>
+            <p class="text-muted mb-0">View and manage all food receivers</p>
+        </div>
+        <div class="text-muted">
+            Total: <span class="badge bg-primary fs-6">{{ receivers|length }} receivers</span>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Pickups</h4>
+                            <h2 class="text-primary mb-0">
+                                {% with total=0 %}
+                                    {% for receiver in receivers %}
+                                        {% with total=total|add:receiver.pickup_count %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle p-3">
+                                <i class="fas fa-truck-loading fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Successful</h4>
+                            <h2 class="text-success mb-0">
+                                {% with total=0 %}
+                                    {% for receiver in receivers %}
+                                        {% with total=total|add:receiver.successful_pickups %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Quantity</h4>
+                            <h2 class="text-info mb-0">
+                                {% with total=0 %}
+                                    {% for receiver in receivers %}
+                                        {% with total=total|add:receiver.total_quantity %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total }}kg
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-weight fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Avg Success Rate</h4>
+                            <h2 class="text-warning mb-0">
+                                {% with total_success=0 total_pickups=0 %}
+                                    {% for receiver in receivers %}
+                                        {% with total_success=total_success|add:receiver.successful_pickups %}
+                                        {% endwith %}
+                                        {% with total_pickups=total_pickups|add:receiver.pickup_count %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {% if total_pickups > 0 %}
+                                        {{ total_success|floatformat:1 }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-percentage fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receivers Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0">All Receivers</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Receiver</th>
+                            <th>Contact</th>
+                            <th>Capacity</th>
+                            <th>Location</th>
+                            <th>Total Pickups</th>
+                            <th>Successful</th>
+                            <th>Success Rate</th>
+                            <th>Joined Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for receiver in receivers %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 40px; height: 40px;">
+                                            {{ receiver.name|first|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ receiver.name }}</h6>
+                                        <small class="text-muted">ID: {{ receiver.receiver_id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-muted">{{ receiver.contact|default:"N/A" }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info fs-6">{{ receiver.capacity }}kg</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ receiver.location_lat|floatformat:2 }}, {{ receiver.location_long|floatformat:2 }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary fs-6">{{ receiver.pickup_count }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success fs-6">{{ receiver.successful_pickups }}</span>
+                            </td>
+                            <td>
+                                {% if receiver.pickup_count > 0 %}
+                                    {% widthratio receiver.successful_pickups receiver.pickup_count 100 %}%
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ receiver.created_at|date:"M d, Y" }}</small>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-users fa-2x mb-3"></i>
+                                <p class="mb-0">No receivers found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

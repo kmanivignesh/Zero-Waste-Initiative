@@ -1,0 +1,954 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header animate__animated animate__fadeIn">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold text-primary mb-2">
+                    <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+                </h1>
+                <p class="text-muted mb-0">
+                    Welcome, <strong class="text-primary">
+                    {% if user_type == 'donor' and donor_name %}
+                        {{ donor_name }}
+                    {% elif user_type == 'receiver' and receiver_name %}
+                        {{ receiver_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    </strong>!<br>
+                     Manage your food donations and pickup requests
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="user-badge bg-primary text-white p-3 rounded-3 d-inline-block">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <span class="fw-semibold">{{ user_type|title }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user_type == 'donor' %}
+        <!-- Stats Cards for Donor -->
+        <div class="row mt-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-primary text-white animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ donations|length }}</h2>
+                                <p class="mb-0">Total Donations</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-hand-holding-heart fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-warning text-white animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ pending_pickups|length }}</h2>
+                                <p class="mb-0">Pending Requests</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-info text-white animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ accepted_pickups|length }}</h2>
+                                <p class="mb-0">Accepted Pickups</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-success text-white animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ accepted_pickups|length }}</h2>
+                                <p class="mb-0">Completed</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-truck-loading fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Action Button -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="{% url 'donors:donation_entry' %}" class="btn btn-primary btn-lg px-4 py-3 float-end animate__animated animate__bounceIn">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Donation
+                </a>
+            </div>
+        </div>
+
+        <!-- Donor Donations Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-list-alt me-2"></i>Your Donations
+                        </h5>
+                        <span class="badge bg-primary fs-6">{{ donations|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Food Type</th>
+                                        <th>Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Expiry Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for donation in donations %}
+                                        <tr class="animate__animated animate__fadeIn">
+                                            <td class="ps-4 fw-semibold">
+                                                <i class="fas fa-utensils me-2 text-primary"></i>{{ donation.food_type }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary fs-6">{{ donation.quantity }}</span>
+                                            </td>
+                                            <td>{{ donation.unit }}</td>
+                                            <td>
+                                                <span>
+                                                    <i class="fas fa-clock me-1"></i>{{ donation.expiry_time }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge status-badge 
+                                                    {% if donation.status == 'available' %}bg-success
+                                                    {% elif donation.status == 'reserved' %}bg-warning
+                                                    {% elif donation.status == 'scheduled' %}bg-info
+                                                    {% elif donation.status == 'completed' %}bg-success
+                                                    {% else %}bg-secondary{% endif %}">
+                                                    {{ donation.status|title }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="fas fa-inbox fa-2x mb-3"></i>
+                                                <p class="mb-0">No donations yet. Start by adding your first donation!</p>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Pickup Requests -->
+        {% if pending_pickups %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-warning text-dark py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-clock me-2"></i>Pending Pickup Requests
+                        </h5>
+                        <span class="badge bg-warning text-dark fs-6">{{ pending_pickups|length }} requests</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-warning">
+                                    <tr>
+                                        <th>Food Type</th>
+                                        <th>Receiver</th>
+                                        <th>Scheduled Time</th>
+                                        <th>Priority Score</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pickup in pending_pickups %}
+                                        <tr class="animate__animated animate__fadeIn">
+                                            <td class="fw-semibold">
+                                                <i class="fas fa-utensils me-2 text-primary"></i>{{ pickup.donation_id.food_type }}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="receiver-avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                        {{ pickup.receiver_id.name|first|upper }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-semibold">{{ pickup.receiver_id.name }}</div>
+                                                        <small class="text-muted">{{ pickup.receiver_id.contact|default:"N/A" }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-calendar me-1 text-muted"></i>
+                                                {{ pickup.scheduled_time }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info fs-6">{{ pickup.priority_score|floatformat:2 }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <!-- SIMPLE FORM - Same structure as working version -->
+                                                <form method="post" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="schedule_id" value="{{ pickup.schedule_id }}">
+                                                    <button type="submit" name="action" value="accept" class="btn btn-success btn-sm">Accept</button>
+                                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- No Pending Pickups Message -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h5 class="text-muted">No Pending Pickup Requests</h5>
+                        <p class="text-muted mb-0">You're all caught up! There are no pending pickup requests at the moment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Accepted Pickups Table -->
+        {% if accepted_pickups %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-info text-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-check-circle me-2"></i>Accepted Pickup Requests
+                        </h5>
+                        <span class="badge bg-light text-dark fs-6">{{ accepted_pickups|length }} requests</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-info">
+                                    <tr>
+                                        <th>Food Type</th>
+                                        <th>Receiver</th>
+                                        <th>Scheduled Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pickup in accepted_pickups %}
+                                        <tr class="animate__animated animate__fadeIn">
+                                            <td class="fw-semibold">
+                                                <i class="fas fa-utensils me-2 text-primary"></i>{{ pickup.donation_id.food_type }}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="receiver-avatar bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                        {{ pickup.receiver_id.name|first|upper }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-semibold">{{ pickup.receiver_id.name }}</div>
+                                                        <small class="text-muted">{{ pickup.receiver_id.contact|default:"N/A" }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-calendar me-1 text-muted"></i>
+                                                {{ pickup.scheduled_time }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success fs-6">{{ pickup.pickup_status|title }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    {% elif user_type == 'receiver' %}
+
+    <!-- Floating Chatbot Icon -->
+<div id="chatbot-icon" onclick="toggleChatbot()">
+    <i class="fas fa-robot"></i>
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-box">
+    <div id="chatbot-header">
+        <span><i class="fas fa-robot me-2"></i>AI Assistant</span>
+        <button onclick="toggleChatbot()">✕</button>
+    </div>
+    <div id="chatbot-body">
+        <p class="text-muted small">
+            Ask about donation priority.<br>
+            Example: <strong>Explain donation 12</strong>
+        </p>
+        <input type="text" id="chatbotInput"
+               placeholder="Why is donation 12 urgent?">
+        <button onclick="sendChatbotMessage()">Ask</button>
+        <div id="chatbotResponse"></div>
+    </div>
+</div>
+
+        <!-- Stats Cards for Receiver -->
+        <div class="row mt-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-primary text-white animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ available_donations|length }}</h2>
+                                <p class="mb-0">Available Donations</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-box-open fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-success text-white animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ accepted_pickups|length }}</h2>
+                                <p class="mb-0">Scheduled Pickups</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-info text-white animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ current_capacity }}</h2>
+                                <p class="mb-0">Current Capacity</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-weight fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card bg-warning text-white animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ accepted_pickups|length }}</h2>
+                                <p class="mb-0">Completed</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-truck fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chatbot Assistant -->
+<!-- <div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="card-title mb-0 fw-bold">
+                    <i class="fas fa-robot me-2"></i>AI Assistant – Priority Explanation
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    Ask why a donation has high or low priority.
+                    Example: <strong>Explain donation 12</strong>
+                </p>
+
+                <div class="input-group">
+                    <input type="text" id="chatbotInput" class="form-control"
+                           placeholder="Why is donation 12 high priority?">
+                    <button class="btn btn-primary" onclick="sendChatbotMessage()">
+                        Ask AI
+                    </button>
+                </div>
+
+                <div id="chatbotResponse" class="mt-3 alert alert-info d-none"></div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+        <!-- Update Capacity Form -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-light py-3">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-edit me-2"></i>Update Capacity
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ capacity_form.capacity.label_tag }}
+                                {{ capacity_form.capacity }}
+                                {% if capacity_form.capacity.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ capacity_form.capacity.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" name="update_capacity" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Capacity
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Receiver Available Donations -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-list-alt me-2"></i>Available Donations
+                        </h5>
+                        <span class="badge bg-primary fs-6">{{ available_donations|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Food Type</th>
+                                        <th>Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Expiry Time</th>
+                                        <th>Priority</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for donation in available_donations %}
+                                        <tr class="animate__animated animate__fadeIn">
+                                            <td class="ps-4 fw-semibold">
+                                                <i class="fas fa-utensils me-2 text-primary"></i>{{ donation.food_type }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary fs-6">{{ donation.quantity }}</span>
+                                            </td>
+                                            <td>{{ donation.unit }}</td>
+                                            <td>
+                                                <span>
+                                                    <i class="fas fa-clock me-1"></i>{{ donation.expiry_time }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info fs-6">{{ donation.priority_score|floatformat:2 }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <form method="post" action="{% url 'receivers:schedule_pickup' donation.donation_id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-calendar-plus me-1"></i>Schedule Pickup
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4 text-muted">
+                                                <i class="fas fa-search fa-2x mb-3"></i>
+                                                <p class="mb-0">No available donations at the moment.</p>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduled Pickups for Receiver -->
+        {% if accepted_pickups %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-success text-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-calendar-check me-2"></i>Your Scheduled Pickups
+                        </h5>
+                        <span class="badge bg-light text-dark fs-6">{{ accepted_pickups|length }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th class="ps-4">Food Type</th>
+                                        <th>Status</th>
+                                        <th>Scheduled Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pickup in accepted_pickups %}
+                                        <tr class="animate__animated animate__fadeIn">
+                                            <td class="ps-4 fw-semibold">
+                                                <i class="fas fa-utensils me-2 text-primary"></i>{{ pickup.donation_id.food_type }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info fs-6">{{ pickup.pickup_status|title }}</span>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-calendar me-1 text-muted"></i>
+                                                {{ pickup.scheduled_time }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Scheduled Pickups</h5>
+                        <p class="text-muted mb-0">Schedule your first pickup from available donations above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Admin Dashboard -->
+        <div class="row mt-4">
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card stat-card bg-primary text-white animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ total_donations }}</h2>
+                                <p class="mb-0">Total Donations</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-donate fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card stat-card bg-success text-white animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ total_receivers }}</h2>
+                                <p class="mb-0">Total Receivers</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card stat-card bg-info text-white animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="fw-bold">{{ total_donors }}</h2>
+                                <p class="mb-0">Total Donors</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-user-friends fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-header bg-light py-3">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-cogs me-2"></i>Admin Overview
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">Welcome to the admin dashboard. Use the sidebar to manage users, donations, and schedules.</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'donors_list' %}" class="btn btn-primary btn-sm mb-2">
+                                    <i class="fas fa-user-friends me-1"></i>Manage Donors
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'receivers_list' %}" class="btn btn-primary btn-sm mb-2">
+                                    <i class="fas fa-users me-1"></i>Manage Receivers
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'donations_list' %}" class="btn btn-primary btn-sm mb-2">
+                                    <i class="fas fa-donate me-1"></i>Manage Donations
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'pickups_list' %}" class="btn btn-primary btn-sm mb-2">
+                                    <i class="fas fa-calendar-check me-1"></i>Manage Schedules
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.dashboard-container {
+    padding: 20px 0;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    border-left: 5px solid #2ecc71;
+}
+
+.user-badge {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stat-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    opacity: 0.8;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+    font-weight: 600;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-success {
+    background: #28a745;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.receiver-avatar {
+    font-weight: 600;
+}
+
+.animate__animated.animate__fadeInUp:nth-child(2) { animation-delay: 0.1s; }
+.animate__animated.animate__fadeInUp:nth-child(3) { animation-delay: 0.2s; }
+.animate__animated.animate__fadeInUp:nth-child(4) { animation-delay: 0.3s; }
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .user-badge {
+        margin-top: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn {
+        min-width: 60px;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Simple loading state for forms */
+.form-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Floating Chatbot Styles */
+#chatbot-icon {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: #2ecc71;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+#chatbot-box {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 320px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 1001;
+}
+
+#chatbot-header {
+    background: #2ecc71;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chatbot-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#chatbot-body {
+    padding: 15px;
+}
+
+#chatbot-body input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+#chatbot-body button {
+    width: 100%;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+#chatbotResponse {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    background: #f1f8f4;
+    padding: 8px;
+    border-radius: 8px;
+    display: none;
+}
+
+</style>
+
+<script>
+// Simple form handling without interfering with submission
+document.addEventListener('DOMContentLoaded', function() {
+    // Add simple loading state for forms
+    const forms = document.querySelectorAll('form');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const submitButton = e.submitter;
+            
+            // Only add confirmation for reject actions
+            if (submitButton && submitButton.value === 'reject') {
+                if (!confirm('Are you sure you want to reject this pickup request?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            
+            // Simple loading state without disabling the form
+            if (submitButton) {
+                const originalText = submitButton.innerHTML;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                
+                // Reset button text after 3 seconds (fallback)
+                setTimeout(() => {
+                    if (submitButton.parentNode) {
+                        submitButton.innerHTML = originalText;
+                    }
+                }, 3000);
+            }
+        });
+    });
+});
+
+// function sendChatbotMessage() {
+//     const input = document.getElementById("chatbotInput");
+//     const responseBox = document.getElementById("chatbotResponse");
+
+//     if (!input.value.trim()) return;
+
+//     fetch(`/chatbot/reply/?message=${encodeURIComponent(input.value)}`)
+//         .then(res => res.json())
+//         .then(data => {
+//             responseBox.classList.remove("d-none");
+//             responseBox.innerText = data.reply;
+//         })
+//         .catch(() => {
+//             responseBox.classList.remove("d-none");
+//             responseBox.innerText = "Something went wrong. Please try again.";
+//         });
+// }
+
+function toggleChatbot() {
+    const box = document.getElementById("chatbot-box");
+    box.style.display = box.style.display === "none" || box.style.display === ""
+        ? "block" : "none";
+}
+
+function sendChatbotMessage() {
+    const input = document.getElementById("chatbotInput");
+    const responseBox = document.getElementById("chatbotResponse");
+
+    if (!input.value.trim()) return;
+
+    fetch(`/chatbot/reply/?message=${encodeURIComponent(input.value)}`)
+        .then(res => res.json())
+        .then(data => {
+            responseBox.style.display = "block";
+            responseBox.innerText = data.reply;
+        })
+        .catch(() => {
+            responseBox.style.display = "block";
+            responseBox.innerText = "Something went wrong. Please try again.";
+        });
+}
+
+</script>
+{% endblock %}

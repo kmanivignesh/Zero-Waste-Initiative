@@ -1,0 +1,227 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Manage Donations - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1"><i class="fas fa-donate me-2"></i>Manage Donations</h2>
+            <p class="text-muted mb-0">View and manage all food donations</p>
+        </div>
+        <div class="text-muted">
+            Total: <span class="badge bg-primary fs-6">{{ donations|length }} donations</span>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Donations</h4>
+                            <h2 class="text-primary mb-0">{{ donations|length }}</h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle p-3">
+                                <i class="fas fa-donate fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Available</h4>
+                            <h2 class="text-success mb-0">
+                                {% with count=0 %}
+                                    {% for donation in donations %}
+                                        {% if donation.status == 'available' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-box-open fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Reserved</h4>
+                            <h2 class="text-warning mb-0">
+                                {% with count=0 %}
+                                    {% for donation in donations %}
+                                        {% if donation.status == 'reserved' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Completed</h4>
+                            <h2 class="text-info mb-0">
+                                {% with count=0 %}
+                                    {% for donation in donations %}
+                                        {% if donation.status == 'completed' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donations Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0">All Donations</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Food Type</th>
+                            <th>Donor</th>
+                            <th>Quantity</th>
+                            <th>Expiry Time</th>
+                            <th>Status</th>
+                            <th>Assigned Receiver</th>
+                            <th>Created Date</th>
+                            <th class="text-center">Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donation in donations %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 40px; height: 40px;">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ donation.food_type }}</h6>
+                                        <small class="text-muted">ID: {{ donation.donation_id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 32px; height: 32px;">
+                                            <i class="fas fa-user text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 small">{{ donation.donor_id.name }}</h6>
+                                        <small class="text-muted">{{ donation.donor_id.contact }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary fs-6">{{ donation.quantity }} {{ donation.unit }}</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ donation.expiry_time|date:"M d, Y" }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if donation.status == 'available' %}bg-success
+                                    {% elif donation.status == 'reserved' %}bg-warning
+                                    {% elif donation.status == 'completed' %}bg-info
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ donation.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if donation.assigned_receiver %}
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 32px; height: 32px;">
+                                            <i class="fas fa-user text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 small">{{ donation.assigned_receiver.name }}</h6>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <span class="text-muted">Not assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ donation.created_at|date:"M d, Y" }}</small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info fs-6">{{ donation.priority_score|floatformat:2 }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-donate fa-2x mb-3"></i>
+                                <p class="mb-0">No donations found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

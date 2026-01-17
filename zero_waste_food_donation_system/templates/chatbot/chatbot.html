@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zero Waste Chatbot</title>
+</head>
+<body>
+<h2>AI Assistant – Zero Waste Initiative</h2>
+
+<input type="text" id="userInput" placeholder="Ask about donation priority">
+<button onclick="sendMessage()">Ask</button>
+
+<p id="botReply"></p>
+
+<script>
+function sendMessage() {
+    let msg = document.getElementById("userInput").value;
+
+    fetch(`/chatbot/reply/?message=${msg}`)
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("botReply").innerText = data.reply;
+    });
+}
+</script>
+</body>
+</html>

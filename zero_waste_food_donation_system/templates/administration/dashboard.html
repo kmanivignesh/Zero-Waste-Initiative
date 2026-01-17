@@ -1,0 +1,297 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h3 mb-3">Dashboard Overview</h2>
+        </div>
+        
+        <!-- Total Donors -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Donors</h4>
+                            <h2 class="text-primary mb-0">{{ donors_count }}</h2>
+                            <small class="text-muted">Registered donors</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle p-3">
+                                <i class="fas fa-hand-holding-heart fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Receivers -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Receivers</h4>
+                            <h2 class="text-success mb-0">{{ receivers_count }}</h2>
+                            <small class="text-muted">Registered receivers</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Donations -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Donations</h4>
+                            <h2 class="text-info mb-0">{{ donations_count }}</h2>
+                            <small class="text-muted">{{ total_quantity }}kg total</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-donate fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Pickups -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Pickups</h4>
+                            <h2 class="text-warning mb-0">{{ pickups_count }}</h2>
+                            <small class="text-muted">{{ success_rate }}% success rate</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-truck-loading fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row - Status Overview -->
+    <div class="row mb-4">
+        <!-- Donation Status -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-pie me-2"></i>Donation Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h3 class="text-primary">{{ available_donations }}</h3>
+                                <small class="text-muted">Available</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h3 class="text-warning">{{ reserved_donations }}</h3>
+                                <small class="text-muted">Reserved</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="text-success">{{ completed_donations }}</h3>
+                            <small class="text-muted">Completed</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pickup Status -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-tasks me-2"></i>Pickup Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h3 class="text-warning">{{ pending_pickups }}</h3>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h3 class="text-success">{{ accepted_pickups }}</h3>
+                                <small class="text-muted">Accepted</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="text-danger">{{ rejected_pickups }}</h3>
+                            <small class="text-muted">Rejected</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row - Charts and Top Performers -->
+    <div class="row">
+        <!-- Monthly Trend -->
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Monthly Activity Trend</h5>
+            </div>
+            <div class="card-body">
+                {% if monthly_trend %}
+                    <canvas id="monthlyTrendChart" height="250"></canvas>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No trend data available</p>
+                        <small class="text-muted">Data will appear when there are donations and pickups</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-trophy me-2"></i>Top Performers</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Top Donors</h6>
+                    {% for donor in top_donors %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="bg-light rounded-circle p-2">
+                                <i class="fas fa-user text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-1">{{ donor.name }}</h6>
+                            <small class="text-muted">{{ donor.num_donations }} donations</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="badge bg-primary">{{ donor.total_quantity }}kg</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                    <h6 class="text-muted mb-3">Top Receivers</h6>
+                    {% for receiver in top_receivers %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="bg-light rounded-circle p-2">
+                                <i class="fas fa-user text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-1">{{ receiver.name }}</h6>
+                            <small class="text-muted">{{ receiver.num_pickups }} pickups</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="badge bg-success">{{ receiver.success_rate }}%</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fourth Row - Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0"><i class="fas fa-clock me-2"></i>Recent Activity (Last 7 Days)</h5>
+                    <span class="badge bg-primary">{{ recent_donations|add:recent_pickups }} activities</span>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <h3 class="text-primary">{{ recent_donations }}</h3>
+                            <p class="text-muted mb-0">New Donations</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="text-success">{{ recent_pickups }}</h3>
+                            <p class="text-muted mb-0">New Pickups</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="monthlyTrendData" type="application/json">
+    {{ monthly_trend|default:"[]"|safe }}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const monthlyTrendData = JSON.parse(document.getElementById('monthlyTrendData').textContent);
+
+    if (monthlyTrendData && monthlyTrendData.length > 0) {
+        const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+
+        const labels = monthlyTrendData.map(item => item.month || '');
+        const donationsData = monthlyTrendData.map(item => item.donations || 0);
+        const pickupsData = monthlyTrendData.map(item => item.pickups || 0);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Donations',
+                        data: donationsData,
+                        borderColor: '#FF6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Pickups',
+                        data: pickupsData,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    } else {
+        console.log('No monthly trend data available');
+    }
+});
+</script>
+{% endblock %}

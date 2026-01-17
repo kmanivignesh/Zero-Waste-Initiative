@@ -1,0 +1,226 @@
+{% extends 'administration/base.html' %}
+
+{% block title %}Manage Pickups - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1"><i class="fas fa-truck-loading me-2"></i>Manage Pickups</h2>
+            <p class="text-muted mb-0">View and manage all pickup schedules</p>
+        </div>
+        <div class="text-muted">
+            Total: <span class="badge bg-primary fs-6">{{ pickups|length }} pickups</span>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Pending</h4>
+                            <h2 class="text-warning mb-0">
+                                {% with count=0 %}
+                                    {% for pickup in pickups %}
+                                        {% if pickup.pickup_status == 'pending' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Accepted</h4>
+                            <h2 class="text-success mb-0">
+                                {% with count=0 %}
+                                    {% for pickup in pickups %}
+                                        {% if pickup.pickup_status == 'accepted' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Rejected</h4>
+                            <h2 class="text-danger mb-0">
+                                {% with count=0 %}
+                                    {% for pickup in pickups %}
+                                        {% if pickup.pickup_status == 'rejected' %}
+                                            {% with count=count|add:1 %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ count }}
+                                {% endwith %}
+                            </h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger text-white rounded-circle p-3">
+                                <i class="fas fa-times-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Pickups</h4>
+                            <h2 class="text-info mb-0">{{ pickups|length }}</h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-truck-loading fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pickups Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0">All Pickup Schedules</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Schedule ID</th>
+                            <th>Donation</th>
+                            <th>Receiver</th>
+                            <th>Donor</th>
+                            <th>Scheduled Time</th>
+                            <th>Priority Score</th>
+                            <th>Status</th>
+                            <th>Food Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pickup in pickups %}
+                        <tr>
+                            <td class="ps-4">
+                                <strong>#{{ pickup.schedule_id }}</strong>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 32px; height: 32px;">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 small">{{ pickup.donation_id.food_type }}</h6>
+                                        <small class="text-muted">{{ pickup.donation_id.quantity }}kg</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 32px; height: 32px;">
+                                            {{ pickup.receiver_id.name|first|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 small">{{ pickup.receiver_id.name }}</h6>
+                                        <small class="text-muted">{{ pickup.receiver_id.contact }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 32px; height: 32px;">
+                                            {{ pickup.donation_id.donor_id.name|first|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 small">{{ pickup.donation_id.donor_id.name }}</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ pickup.scheduled_time|date:"M d, Y H:i" }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info fs-6">{{ pickup.priority_score|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if pickup.pickup_status == 'pending' %}bg-warning
+                                    {% elif pickup.pickup_status == 'accepted' %}bg-success
+                                    {% elif pickup.pickup_status == 'rejected' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ pickup.pickup_status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ pickup.donation_id.food_type }} • 
+                                    {{ pickup.donation_id.quantity }}{{ pickup.donation_id.unit }}
+                                </small>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-truck-loading fa-2x mb-3"></i>
+                                <p class="mb-0">No pickup schedules found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

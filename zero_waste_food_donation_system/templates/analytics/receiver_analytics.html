@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Analytics - Receiver{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-1"><i class="fas fa-chart-line text-primary me-2"></i>My Analytics</h1>
+                    <p class="text-muted mb-0">Track your pickup performance and capacity utilization</p>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-calendar me-2"></i>
+                        {% if period == 'week' %}Last 7 Days
+                        {% elif period == 'month' %}Last 30 Days
+                        {% elif period == 'year' %}Last 12 Months
+                        {% else %}All Time{% endif %}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?period=week">Last 7 Days</a></li>
+                        <li><a class="dropdown-item" href="?period=month">Last 30 Days</a></li>
+                        <li><a class="dropdown-item" href="?period=year">Last 12 Months</a></li>
+                        <li><a class="dropdown-item" href="?period=all">All Time</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Total Pickups</h4>
+                            <h2 class="text-primary mb-0">{{ total_pickups }}</h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle p-3">
+                                <i class="fas fa-truck-loading fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Successful</h4>
+                            <h2 class="text-success mb-0">{{ successful_pickups }}</h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Success Rate</h4>
+                            <h2 class="text-info mb-0">{{ success_rate }}%</h2>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-percentage fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h4 class="card-title text-muted mb-2">Capacity Used</h4>
+                            <h2 class="text-warning mb-0">{{ capacity_utilization }}%</h2>
+                            <small class="text-muted">{{ total_quantity }}kg / {{ receiver_capacity }}kg</small>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-weight fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Food Type Distribution -->
+        <div class="col-xl-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-utensils me-2"></i>Food Type Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div id="foodTypeChart" style="height: 300px;">
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Food type distribution chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pickup Status -->
+        <div class="col-xl-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-tasks me-2"></i>Pickup Status</h5>
+                </div>
+                <div class="card-body">
+                    <div id="statusChart" style="height: 300px;">
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Pickup status distribution chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Trend & Recent Activity -->
+    <div class="row">
+        <!-- Monthly Trend -->
+        <div class="col-xl-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Monthly Pickup Trend</h5>
+                </div>
+                <div class="card-body">
+                    <div id="monthlyTrendChart" style="height: 300px;">
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Monthly trend chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-xl-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0"><i class="fas fa-clock me-2"></i>Recent Pickups</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_pickups %}
+                        <div class="list-group list-group-flush">
+                            {% for pickup in recent_pickups %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-light rounded-circle p-2">
+                                            <i class="fas fa-utensils text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">{{ pickup.donation_id.food_type }}</h6>
+                                        <small class="text-muted">{{ pickup.donation_id.quantity }}kg • {{ pickup.scheduled_time|date:"M d" }}</small>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-{% if pickup.pickup_status == 'accepted' %}success{% elif pickup.pickup_status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                            {{ pickup.pickup_status }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No recent pickups</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load chart data
+    fetch(`{% url 'receivers:analytics_data' %}?period={{ period }}`)
+        .then(response => response.json())
+        .then(data => {
+            renderFoodTypeChart(data.food_data);
+            renderStatusChart(data.status_data);
+            renderMonthlyTrendChart(data.monthly_trend);
+        });
+
+    function renderFoodTypeChart(foodData) {
+        const ctx = document.createElement('canvas');
+        document.getElementById('foodTypeChart').innerHTML = '';
+        document.getElementById('foodTypeChart').appendChild(ctx);
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: foodData.map(item => item.food_type),
+                datasets: [{
+                    data: foodData.map(item => item.quantity),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    function renderStatusChart(statusData) {
+        const ctx = document.createElement('canvas');
+        document.getElementById('statusChart').innerHTML = '';
+        document.getElementById('statusChart').appendChild(ctx);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: statusData.map(item => item.pickup_status),
+                datasets: [{
+                    label: 'Count',
+                    data: statusData.map(item => item.count),
+                    backgroundColor: '#36A2EB'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function renderMonthlyTrendChart(monthlyTrend) {
+        if (monthlyTrend.length === 0) return;
+        
+        const ctx = document.createElement('canvas');
+        document.getElementById('monthlyTrendChart').innerHTML = '';
+        document.getElementById('monthlyTrendChart').appendChild(ctx);
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthlyTrend.map(item => item.month),
+                datasets: [{
+                    label: 'Total Pickups',
+                    data: monthlyTrend.map(item => item.total),
+                    borderColor: '#FF6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Successful',
+                    data: monthlyTrend.map(item => item.successful),
+                    borderColor: '#36A2EB',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

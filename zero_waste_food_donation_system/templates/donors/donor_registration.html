@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Donor Registration</title></head>
+<body>
+    <h1>Register as a Donor</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+<p>Already have an account? <a href="{% url 'donors:donor_login' %}">Login</a></p>    {% if form.errors %}
+        <p style="color: red;">Please correct the errors: {{ form.errors }}</p>
+    {% endif %}
+</body>
+</html>
