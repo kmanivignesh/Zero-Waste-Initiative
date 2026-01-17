@@ -108,3 +108,65 @@ A numeric **priority score** used to rank donations on the receiver dashboard.
 
 ## 🏗 System Architecture (High Level)
 
+Donor → Donation Entry
+↓
+ML Priority Scoring Model
+↓
+Receiver Dashboard (Ranked Donations)
+↓
+Pickup Scheduling
+↓
+Explainable AI Chatbot
+
+
+---
+
+## 🛠 Technology Stack
+
+| Component | Technology |
+|---------|-----------|
+Backend | Python, Django |
+Database | Relational Database (Oracle / SQLite for development) |
+Frontend | HTML, CSS, JavaScript, Bootstrap |
+AI / ML | Python, Scikit-Learn, Pandas |
+UI | FontAwesome, CSS Animations |
+
+---
+
+## 🌍 Impact & Sustainability
+
+- **SDG 2 – Zero Hunger:** Improves food access for NGOs
+- **SDG 12 – Responsible Consumption:** Reduces food wastage
+- **SDG 13 – Climate Action:** Lowers methane emissions from food waste
+
+---
+
+## 📸 Application Screens
+
+The project includes screens for:
+- Home and login pages
+- Donor dashboard and donation form
+- Receiver dashboard with priority scores
+- AI Assistant (Explainable AI chatbot)
+- Admin analytics dashboard
+
+---
+
+## 🚀 How to Run the Project
+
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to project directory
+cd zero_waste_initiative
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Apply database migrations
+python manage.py migrate
+
+# Start the development server
+python manage.py runserver
+
